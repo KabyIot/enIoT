@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  replicas: {{ .Values.api.replicaCount }}
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      - name: api
+        image: "{{ .Values.api.image }}"
+        ports:
+        - containerPort: {{ .Values.api.ports.containerPort }}
+        env:
+        - name: REDIS_URL
+          value: "{{ .Values.api.environment.REDIS_URL }}"
+        - name: LICENSE_KEY
+          value: "{{ .Values.api.environment.LICENSE_KEY }}"
+        - name: DJANGO_SETTINGS_MODULE
+          value: "{{ .Values.api.environment.DJANGO_SETTINGS_MODULE }}"
+        volumeMounts:
+        - name: logs
+          mountPath: "{{ .Values.api.logsVolumePath }}"
+      volumes:
+      - name: logs
+        emptyDir: {}

@@ -1,0 +1,104 @@
+fluentd:
+  image: enocean/iotconnector_fluentd:latest
+  volumes:
+    dockerContainersPath: /var/lib/docker/containers
+    logsPath: ./logs
+    
+redis:
+  image: redis:6.2
+  replicas: 1
+  command: ["redis-server", "--protected-mode", "no"]
+  volumeMounts:
+    redisData:
+      mountPath: /data
+  volumeClaims:
+    redisData:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
+
+
+ingress:
+  image: enocean/iotconnector_ingress:latest
+  replicas: 1
+  environment:
+    REDIS_URL: "redis"
+    RABBITMQ_HOST: "rabbitmq"
+    # You can add placeholders for more environment variables here if needed.
+  ports:
+    - containerPort: 7070
+
+
+api:
+  image: enocean/iotconnector_api:latest
+  replicaCount: 1
+  ports:
+    - containerPort: 1887
+  environment:
+    REDIS_URL: "redis://redis:6379/0"
+    LICENSE_KEY: ""
+    DJANGO_SETTINGS_MODULE: "eiotc_api.settings.prod"
+  logsVolumePath: /var/log/enocean/eiotc
+
+
+engine:
+  image: enocean/iotconnector_engine:latest
+  replicas: 1
+  environment:
+    REDIS_URL: "redis"
+    RABBITMQ_HOST: "rabbitmq"
+    IOT_LICENSE_KEY: ""
+    MQTT_CONNSTRING: "mqtt:1883"
+    IOT_ENABLE_MQTT: "1"
+    IOT_MQTT_CLIENT_ID: "iotc_test_instance_1"
+    INGRESS_HOST: "ingress"
+    INGRESS_PORT: "7070"
+    INGRESS_USERNAME: "user1"
+    INGRESS_PASS: "pass"
+    API_URL: "http://api:1887/api/v2"
+
+
+integration:
+  image: enocean/iotconnector_integration:latest
+  replicas: 1
+  environment:
+    REDIS_URL: "redis"
+    RABBITMQ_HOST: "rabbitmq"
+    IOT_ENABLE_MQTT: "1"
+    MQTT_CONNSTRING: "mqtt:1883"
+    SENSOR_STATS_INTERVAL: "600"
+    GATEWAY_STATS_INTERVAL: "600"
+
+
+proxy:
+  image: enocean/proxy:local
+  replicas: 1
+  ports:
+    http: 80
+    https: 443
+    httpAlt: 8080
+  # Define basicAuth credentials here, to be used for creating Secrets
+  basicAuth:
+    username: "admin"  # This will be used with b64enc when creating the Secret
+    password: "Random123"  # This will be used with b64enc when creating the Secret
+
+
+mqtt:
+  image: eclipse-mosquitto:1.6.13
+  replicas: 1
+  ports:
+    - containerPort: 1883
+
+
+rabbitmq:
+  image: rabbitmq:3.10-management
+  replicas: 1
+  ports:
+    management: 15672
+    amqp: 5672
+
+
+
+
+
