@@ -87,8 +87,7 @@ proxy:
 mqtt:
   image: eclipse-mosquitto:1.6.13
   replicas: 1
-  ports:
-    - containerPort: 1883
+  port: 1883
 
 
 rabbitmq:

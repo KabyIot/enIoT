@@ -16,4 +16,4 @@ spec:
       - name: mqtt
         image: "{{ .Values.mqtt.image }}"
         ports:
-        - containerPort: {{ .Values.mqtt.ports.containerPort }}
+        - containerPort: {{ .Values.mqtt.port }}

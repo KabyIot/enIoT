@@ -22,4 +22,4 @@ spec:
           value: "{{ .Values.ingress.environment.RABBITMQ_HOST }}"
         # To add more environment variables, use a loop over .Values.ingress.environment additional entries if defined.
         ports:
-        - containerPort: {{ .Values.ingress.ports.containerPort }}
+        - containerPort: {{ (index .Values.ingress.ports 0).containerPort }}
