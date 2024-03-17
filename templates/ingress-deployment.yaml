@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ingress
+spec:
+  replicas: {{ .Values.ingress.replicas }}
+  selector:
+    matchLabels:
+      app: ingress
+  template:
+    metadata:
+      labels:
+        app: ingress
+    spec:
+      containers:
+      - name: ingress
+        image: "{{ .Values.ingress.image }}"
+        env:
+        - name: REDIS_URL
+          value: "{{ .Values.ingress.environment.REDIS_URL }}"
+        - name: RABBITMQ_HOST
+          value: "{{ .Values.ingress.environment.RABBITMQ_HOST }}"
+        # To add more environment variables, use a loop over .Values.ingress.environment additional entries if defined.
+        ports:
+        - containerPort: {{ .Values.ingress.ports.containerPort }}

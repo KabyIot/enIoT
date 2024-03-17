@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fluentd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fluentd
+  template:
+    metadata:
+      labels:
+        app: fluentd
+    spec:
+      containers:
+      - name: fluentd
+        image: "{{ .Values.fluentd.image }}"
+        volumeMounts:
+        - name: docker-containers
+          mountPath: "{{ .Values.fluentd.volumes.dockerContainersPath }}"
+        - name: logs
+          mountPath: "{{ .Values.fluentd.volumes.logsPath }}"
+      volumes:
+      - name: docker-containers
+        hostPath:
+          path: /var/lib/docker/containers
+          type: Directory
+      - name: logs
+        emptyDir: {}

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ingress
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 7070
+    targetPort: 7070
+  selector:
+    app: ingress

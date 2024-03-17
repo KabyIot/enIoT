@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: integration
+spec:
+  replicas: {{ .Values.integration.replicas }}
+  selector:
+    matchLabels:
+      app: integration
+  template:
+    metadata:
+      labels:
+        app: integration
+    spec:
+      containers:
+      - name: integration
+        image: "{{ .Values.integration.image }}"
+        env:
+        - name: REDIS_URL
+          value: "{{ .Values.integration.environment.REDIS_URL }}"
+        - name: RABBITMQ_HOST
+          value: "{{ .Values.integration.environment.RABBITMQ_HOST }}"
+        - name: IOT_ENABLE_MQTT
+          value: "{{ .Values.integration.environment.IOT_ENABLE_MQTT }}"
+        - name: MQTT_CONNSTRING
+          value: "{{ .Values.integration.environment.MQTT_CONNSTRING }}"
+        - name: SENSOR_STATS_INTERVAL
+          value: "{{ .Values.integration.environment.SENSOR_STATS_INTERVAL }}"
+        - name: GATEWAY_STATS_INTERVAL
+          value: "{{ .Values.integration.environment.GATEWAY_STATS_INTERVAL }}"

@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxy
+spec:
+  replicas: {{ .Values.proxy.replicas }}
+  selector:
+    matchLabels:
+      app: proxy
+  template:
+    metadata:
+      labels:
+        app: proxy
+    spec:
+      containers:
+      - name: proxy
+        image: "{{ .Values.proxy.image }}"
+        ports:
+        - containerPort: {{ .Values.proxy.ports.https }}
+        - containerPort: {{ .Values.proxy.ports.http }}
+        - containerPort: {{ .Values.proxy.ports.httpAlt }}
+        env:
+        - name: BASIC_AUTH_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: proxy-basic-auth
+              key: BASIC_AUTH_USERNAME
+        - name: BASIC_AUTH_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: proxy-basic-auth
+              key: BASIC_AUTH_PASSWORD
+

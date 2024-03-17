@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: engine
+spec:
+  replicas: {{ .Values.engine.replicas }}
+  selector:
+    matchLabels:
+      app: engine
+  template:
+    metadata:
+      labels:
+        app: engine
+    spec:
+      containers:
+      - name: engine
+        image: "{{ .Values.engine.image }}"
+        env:
+        - name: REDIS_URL
+          value: "{{ .Values.engine.environment.REDIS_URL }}"
+        - name: RABBITMQ_HOST
+          value: "{{ .Values.engine.environment.RABBITMQ_HOST }}"
+        - name: IOT_LICENSE_KEY
+          value: "{{ .Values.engine.environment.IOT_LICENSE_KEY }}"
+        - name: MQTT_CONNSTRING
+          value: "{{ .Values.engine.environment.MQTT_CONNSTRING }}"
+        - name: IOT_ENABLE_MQTT
+          value: "{{ .Values.engine.environment.IOT_ENABLE_MQTT }}"
+        - name: IOT_MQTT_CLIENT_ID
+          value: "{{ .Values.engine.environment.IOT_MQTT_CLIENT_ID }}"
+        - name: INGRESS_HOST
+          value: "{{ .Values.engine.environment.INGRESS_HOST }}"
+        - name: INGRESS_PORT
+          value: "{{ .Values.engine.environment.INGRESS_PORT }}"
+        - name: INGRESS_USERNAME
+          value: "{{ .Values.engine.environment.INGRESS_USERNAME }}"
+        - name: INGRESS_PASS
+          value: "{{ .Values.engine.environment.INGRESS_PASS }}"
+        - name: API_URL
+          value: "{{ .Values.engine.environment.API_URL }}"

@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mqtt
+spec:
+  replicas: {{ .Values.mqtt.replicas }}
+  selector:
+    matchLabels:
+      app: mqtt
+  template:
+    metadata:
+      labels:
+        app: mqtt
+    spec:
+      containers:
+      - name: mqtt
+        image: "{{ .Values.mqtt.image }}"
+        ports:
+        - containerPort: {{ .Values.mqtt.ports.containerPort }}
