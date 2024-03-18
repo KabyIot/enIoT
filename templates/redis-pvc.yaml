@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: redis-data
 spec:
-  accessModes: {{ toYaml .Values.redis.volumeClaims.redisData.accessModes | nindent 4 }}
+  accessModes: {{ toYaml .Values.redis.volumeClaims.redisData.accessModes | nindent 2 }}
   resources:
     requests:
       storage: {{ .Values.redis.volumeClaims.redisData.resources.requests.storage }}

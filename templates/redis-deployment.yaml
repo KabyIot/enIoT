@@ -17,6 +17,9 @@ spec:
         image: "{{ .Values.redis.image }}"
         command: {{ .Values.redis.command }}
         volumeMounts:
-        - name: redis-data
+        - name: redis-data-volume
           mountPath: "{{ .Values.redis.volumeMounts.redisData.mountPath }}"
-
+      volumes:
+      - name: redis-data-volume
+        persistentVolumeClaim:
+          claimName: redis-data
